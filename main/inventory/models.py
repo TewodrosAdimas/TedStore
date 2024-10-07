@@ -1,5 +1,13 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from rest_framework.response import Response
+from django.contrib.auth.models import AbstractUser
+
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
+
+    def __str__(self):
+        return self.username
 
 class Category(models.Model):
     name = models.CharField(max_length=100)

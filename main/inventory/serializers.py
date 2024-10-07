@@ -1,5 +1,34 @@
 from rest_framework import serializers
 from .models import InventoryItem, Category
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'password']
+        # extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User(
+            username=validated_data['username'],
+            email=validated_data['email']
+        )
+        user.set_password(validated_data['password'])  # Use set_password to hash the password
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        
+        if 'password' in validated_data:
+            instance.set_password(validated_data['password'])  # Hash the password
+
+        instance.save()
+        return instance
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
