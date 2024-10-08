@@ -4,7 +4,8 @@ from .views import (
     InventoryItemViewSet,
     CategoryViewSet,
     RegisterUserView,
-    LoginUserView
+    LoginUserView,
+    InventoryLevelView
 )
 
 # Create a router and register your viewsets
@@ -16,4 +17,5 @@ urlpatterns = [
     path('', include(router.urls)),  # This will include the router paths
     path('register/', RegisterUserView.as_view(), name='register'),
     path('login/', LoginUserView.as_view(), name='login'),
+    path('inventory-levels/', InventoryLevelView.as_view(), name='inventory-levels'),
 ]

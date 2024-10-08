@@ -77,3 +77,8 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
 
 
+class InventoryLevelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InventoryItem
+        fields = ['id', 'name', 'quantity']  # Only include the fields you want to display
+

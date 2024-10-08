@@ -32,3 +32,16 @@ URL: http://127.0.0.1:8000/inventory/
   "price": 19.99,
   "category_id": 1
 }
+
+Inventory-Levels test:
+
+url: http://localhost:8000/inventory-levels/
+
+Filter test by category:
+GET 
+http://localhost:8000/inventory-levels/?category=1
+Filter test by price range:
+GET http://localhost:8000/inventory-levels/?min_price=10&max_price=50
+
+Filter test by low stock item:
+GET http://localhost:8000/inventory-levels/?low_stock=True

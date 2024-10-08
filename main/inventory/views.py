@@ -1,12 +1,16 @@
 from rest_framework import generics, permissions
 from .models import InventoryItem, Category, CustomUser
-from .serializers import InventoryItemSerializer, CategorySerializer, CustomUserSerializer, LoginSerializer
+from .serializers import InventoryItemSerializer, CategorySerializer, CustomUserSerializer, LoginSerializer, InventoryLevelSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from django_filters import rest_framework as filters
+from rest_framework import generics
+
 
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
@@ -78,3 +82,61 @@ class LoginUserView(generics.GenericAPIView):
             })
         else:
             return Response({'error': 'Invalid credentials'}, status=400)
+
+class InventoryLevelView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access this
+
+    def get(self, request):
+        inventory_items = InventoryItem.objects.all()  # Get all inventory items
+        serializer = InventoryLevelSerializer(inventory_items, many=True)  # Serialize the data
+        return Response(serializer.data)
+
+
+class InventoryLevelFilter(filters.FilterSet):
+    category = filters.ModelChoiceFilter(queryset=Category.objects.all())
+    min_price = filters.NumberFilter(field_name='price', lookup_expr='gte')
+    max_price = filters.NumberFilter(field_name='price', lookup_expr='lte')
+    low_stock = filters.BooleanFilter(method='filter_low_stock')
+
+    class Meta:
+        model = InventoryItem
+        fields = ['category', 'min_price', 'max_price']
+
+    def filter_low_stock(self, queryset, name, value):
+        if value:
+            return queryset.filter(quantity__lt=10)  # Change the threshold as needed
+        return queryset
+
+
+
+
+
+class InventoryLevelFilter(filters.FilterSet):
+    category = filters.ModelChoiceFilter(queryset=Category.objects.all())
+    min_price = filters.NumberFilter(field_name='price', lookup_expr='gte')
+    max_price = filters.NumberFilter(field_name='price', lookup_expr='lte')
+    low_stock = filters.BooleanFilter(method='filter_low_stock')
+
+    class Meta:
+        model = InventoryItem
+        fields = ['category', 'min_price', 'max_price']
+
+    def filter_low_stock(self, queryset, name, value):
+        if value:
+            return queryset.filter(quantity__lt=10)  # Change the threshold as needed
+        return queryset
+
+
+class InventoryLevelView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access this
+    serializer_class = InventoryLevelSerializer
+    filterset_class = InventoryLevelFilter
+
+    def get_queryset(self):
+        queryset = InventoryItem.objects.all()
+        
+        # Filtering by the owner
+        queryset = queryset.filter(owner=self.request.user)
+
+        # Apply the filters if provided in the request
+        return self.filterset_class(self.request.GET, queryset=queryset).qs
