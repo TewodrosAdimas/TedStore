@@ -23,6 +23,8 @@ class InventoryItem(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Associate inventory items with the user
+
 
     def clean(self):
         if self.quantity < 0:
