@@ -45,3 +45,14 @@ GET http://localhost:8000/inventory-levels/?min_price=10&max_price=50
 
 Filter test by low stock item:
 GET http://localhost:8000/inventory-levels/?low_stock=True
+
+
+Update Inventory
+http://localhost:8000/inventory/<inventory_item_id>/
+
+{
+	"name": "Add your name in the body",
+    "quantity": "5",
+    "price": "15",
+    "category_id": "1"
+}

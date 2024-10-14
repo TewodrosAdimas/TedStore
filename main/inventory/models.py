@@ -11,6 +11,7 @@ class CustomUser(AbstractUser):
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -34,3 +35,13 @@ class InventoryItem(models.Model):
 
     def __str__(self):
         return self.name
+
+class InventoryChangeLog(models.Model):
+    item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='change_logs')
+    quantity_changed = models.IntegerField()
+    change_type = models.CharField(max_length=20)  # e.g., "restock" or "sale"
+    date_changed = models.DateTimeField(auto_now_add=True)
+    changed_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.change_type} - {self.item.name} by {self.changed_by.username} on {self.date_changed}"
