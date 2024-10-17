@@ -24,6 +24,7 @@ class InventoryItem(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+    low_stock_threshold = models.IntegerField(default=10)  # Default threshold value
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Associate inventory items with the user
 
 

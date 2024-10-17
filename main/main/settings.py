@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "inventory",
+    "django_extensions",
     
 ]
 
@@ -140,3 +141,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,  # Set the default page size
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tedstore1999@gmail.com'
+EMAIL_HOST_PASSWORD = 'Tedi@1234'
+DEFAULT_FROM_EMAIL = 'tedstore1999@gmail.com'

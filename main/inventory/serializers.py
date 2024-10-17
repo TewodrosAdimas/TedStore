@@ -45,7 +45,7 @@ class InventoryItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InventoryItem
-        fields = ['id', 'name', 'description', 'quantity', 'price', 'category', 'category_id', 'date_added', 'last_updated', 'owner']
+        fields = ['id', 'name', 'description', 'quantity', 'price', 'category', 'category_id', 'date_added', 'last_updated', 'low_stock_threshold', 'owner']
         read_only_fields = ['owner']
     def create(self, validated_data):
         validated_data['owner'] = self.context['request'].user

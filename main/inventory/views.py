@@ -12,6 +12,8 @@ from django_filters import rest_framework as filters
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import OrderingFilter
+from .utils import send_low_stock_alert
+from django.shortcuts import get_object_or_404, redirect
 
 
 class UserListCreateView(generics.ListCreateAPIView):
@@ -40,6 +42,26 @@ class InventoryItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = InventoryItem.objects.all()
     serializer_class = InventoryItemSerializer
     permission_classes = [IsAuthenticated]
+
+# Check if the stock level is below the threshold
+    def check_stock_levels(self):
+        if self.quantity < self.low_stock_threshold:
+            return True
+        return False
+
+    def update_inventory_item(request, pk):
+        item = get_object_or_404(InventoryItem, pk=pk)
+        item.quantity = request.POST['quantity']
+        item.save()
+
+
+    # Check if stock is below threshold and send an email alert
+        if item.check_stock_levels():
+            send_low_stock_alert(item)
+
+        return redirect('inventory_list')
+
+
 
     def get_queryset(self):
         # Ensure users can only manage their own inventory items

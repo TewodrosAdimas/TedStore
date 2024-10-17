@@ -9,10 +9,10 @@ url: http://localhost:8000/register/
 
 login test:
 url: http://localhost:8000/login/
-{
-  "username": "Tewoflos",
-  "password": "Tewoflos@1999"
-}
+  {
+    "username": "Tewoflos",
+    "password": "Tewoflos@1999"
+  }
 
 
 Add category
